@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Natillera
 
-## Getting Started
+Aplicación web para administrar una natillera familiar con modo público y modo administrador.
 
-First, run the development server:
+## Qué incluye
+
+- Configuración de la natillera: nombre, fechas, duración, fecha estimada de liquidación y estado.
+- Participantes: registro, edición, activación/desactivación y ficha individual.
+- Caja general: cálculo automático de entradas, salidas, fondo común y movimientos.
+- Aportes mensuales: cuotas variables por participante, pagos parciales y mora del 2%.
+- Polla mensual: aporte fijo de `5000`, número por mes, ganador y reparto 50/50.
+- Almuerzos: aporte fijo de `5000` por participante cada mes.
+- Préstamos: desembolso desde caja, tabla de amortización e interés mensual del 5%.
+- Liquidación final: ahorro individual + fondo común - deudas pendientes.
+- Alertas administrativas: vencidos, pendientes, deudas y proximidad de liquidación.
+- Vista pública: consulta de caja y buscador por participante sin permisos de edición.
+
+## Stack
+
+- Next.js 16
+- TypeScript
+- Tailwind CSS 4
+- Persistencia local en JSON (`data/natillera.json`)
+
+## Configuración
+
+1. Instala dependencias:
+
+```bash
+npm install
+```
+
+2. Crea tu archivo de entorno:
+
+```bash
+cp .env.example .env.local
+```
+
+3. Configura las variables:
+
+```env
+NATILLERA_ADMIN_USERNAME=admin
+NATILLERA_ADMIN_PASSWORD=Familia123
+NATILLERA_SESSION_SECRET=un-secreto-largo-y-aleatorio
+```
+
+Si no configuras variables de entorno en desarrollo, la app usa un fallback local:
+
+- Usuario: `admin`
+- Contraseña: `Familia123`
+
+Ese fallback es solo para desarrollo y debe cambiarse antes de usar la app en un entorno real.
+
+## Ejecutar
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cómo probar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Vista pública: entra a `/`
+- Login admin: entra a `/login`
+- Panel admin: entra a `/admin`
 
-## Learn More
+Flujos recomendados:
 
-To learn more about Next.js, take a look at the following resources:
+1. Configura fechas y estado en `Configuración`.
+2. Registra participantes en `Participantes`.
+3. Carga aportes en `Aportes`.
+4. Registra polla y ganador mensual en `Polla`.
+5. Registra almuerzos en `Almuerzos`.
+6. Crea préstamos y abona cuotas en `Préstamos`.
+7. Revisa caja y movimientos en `Caja`.
+8. Genera la proyección final en `Liquidación`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Persistencia
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Los datos se guardan en:
 
-## Deploy on Vercel
+```text
+data/natillera.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+La app crea ese archivo automáticamente si no existe.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Validaciones principales
+
+- No permite préstamos mayores que la caja disponible.
+- No permite duplicar aporte, polla o almuerzo del mismo participante en el mismo mes y año.
+- No permite valores negativos.
+- No permite pagar más que el saldo pendiente de una cuota de préstamo.
+- Protege rutas administrativas con cookie de sesión y verificación del lado del servidor.
+
+## Calidad
+
+Validado con:
+
+```bash
+npm run lint
+npm run build
+```

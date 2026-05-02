@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "settings": {
+    "id": "settings",
+    "name": "Natillera",
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-30",
+    "durationMonths": 13,
+    "estimatedSettlementDate": "2026-12-05",
+    "status": "active",
+    "updatedAt": "2026-05-01T22:19:21.091Z"
+  },
+  "participants": [],
+  "monthlyContributions": [],
+  "raffleEntries": [],
+  "raffleRounds": [],
+  "lunches": [],
+  "loans": [],
+  "loanInstallments": [],
+  "cashAdjustments": [],
+  "settlements": [],
+  "updatedAt": "2026-05-01T22:19:21.091Z"
+}
