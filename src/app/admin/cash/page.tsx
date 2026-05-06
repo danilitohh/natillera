@@ -1,7 +1,7 @@
-import { deleteCashAdjustmentAction, saveCashAdjustmentAction } from "@/app/admin/actions";
+import { deleteCashAdjustmentAction } from "@/app/admin/actions";
+import { CashAdjustmentForm } from "@/components/forms/cash-adjustment-form";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { ConfirmButton } from "@/components/forms/confirm-button";
-import { SubmitButton } from "@/components/forms/submit-button";
 import { FeedbackBanner } from "@/components/ui/feedback-banner";
 import { StatCard } from "@/components/ui/stat-card";
 import { requireAdminSession } from "@/lib/auth";
@@ -66,61 +66,10 @@ export default async function CashPage(props: { searchParams: SearchParams }) {
           <h3 className="text-xl font-semibold text-[var(--foreground)]">
             Ajuste manual autorizado
           </h3>
-          <form action={saveCashAdjustmentAction} className="mt-6 grid gap-4">
-            <div>
-              <label htmlFor="date" className="label">
-                Fecha
-              </label>
-              <input
-                id="date"
-                name="date"
-                type="date"
-                className="input"
-                defaultValue={new Date().toISOString().slice(0, 10)}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="type" className="label">
-                Tipo
-              </label>
-              <select id="type" name="type" className="select">
-                <option value="income">Ingreso</option>
-                <option value="expense">Salida</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="amount" className="label">
-                Valor
-              </label>
-              <input id="amount" name="amount" type="number" min="0" className="input" required />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="label">
-                Descripción
-              </label>
-              <textarea id="description" name="description" className="textarea" required />
-            </div>
-
-            <div>
-              <label htmlFor="participantId" className="label">
-                Participante relacionado
-              </label>
-              <select id="participantId" name="participantId" className="select">
-                <option value="">Ninguno</option>
-                {database.participants.map((participant) => (
-                  <option key={participant.id} value={participant.id}>
-                    {participant.fullName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <SubmitButton label="Registrar ajuste" pendingLabel="Guardando..." />
-          </form>
+          <CashAdjustmentForm
+            participants={database.participants}
+            defaultDate={new Date().toISOString().slice(0, 10)}
+          />
         </div>
 
         <div className="panel">
