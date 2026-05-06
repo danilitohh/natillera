@@ -153,7 +153,7 @@
     },
     {
       "id": "participant_4415dae0-0055-448f-a251-0fbd09b4269d",
-      "fullName": "Lina Marcela Cardona (respalda Marleny Zapata)",
+      "fullName": "Lina Marcela Cardona",
       "phone": null,
       "document": null,
       "joinedAt": "2026-03-15",
@@ -2363,7 +2363,7 @@
       "installmentCount": 3,
       "monthlyInterestRate": 0.05,
       "status": "active",
-      "notes": "Prestamo importado desde Excel. Sin plan de cuotas especificado en la fuente.",
+      "notes": "Prestamo importado desde Excel. Deuda de Lina Marcela Cardona, respaldada por Marleny Zapata. Sin plan de cuotas especificado en la fuente.",
       "createdAt": "2026-05-01T23:59:00.000Z",
       "updatedAt": "2026-05-01T22:40:37.446Z"
     },
