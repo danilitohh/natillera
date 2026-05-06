@@ -8,7 +8,7 @@
     "durationMonths": 12,
     "estimatedSettlementDate": "2026-12-01",
     "status": "active",
-    "updatedAt": "2026-05-01T23:46:19.272Z"
+    "updatedAt": "2026-05-06T16:48:30.000Z"
   },
   "participants": [
     {
@@ -327,20 +327,6 @@
       "lateInterestPaid": 0,
       "dueDate": "2026-04-30",
       "paidAt": "2026-04-30",
-      "notes": null,
-      "createdAt": "2026-05-01T23:59:00.000Z",
-      "updatedAt": "2026-05-01T23:59:00.000Z"
-    },
-    {
-      "id": "contribution_034c3b3a-fd73-4500-9599-cb2f85852e02",
-      "participantId": "participant_7a2542e6-4705-4d5e-8de9-d7f8903d3cd8",
-      "month": 5,
-      "year": 2026,
-      "quotaAmount": 200000,
-      "amountPaid": 200000,
-      "lateInterestPaid": 0,
-      "dueDate": "2026-05-31",
-      "paidAt": "2026-05-31",
       "notes": null,
       "createdAt": "2026-05-01T23:59:00.000Z",
       "updatedAt": "2026-05-01T23:59:00.000Z"
@@ -2553,17 +2539,6 @@
       "createdAt": "2026-05-01T23:59:00.000Z"
     },
     {
-      "id": "adjustment_28a66198-f765-4bda-82e9-9aeae02d92b1",
-      "date": "2026-03-24",
-      "type": "expense",
-      "category": "adjustment",
-      "amount": 720000,
-      "description": "Paseo",
-      "participantId": null,
-      "createdBy": "admin",
-      "createdAt": "2026-05-01T23:59:00.000Z"
-    },
-    {
       "id": "adjustment_df235c5c-35b5-4ea6-b6db-f654abe803e7",
       "date": "2026-03-30",
       "type": "expense",
@@ -2606,8 +2581,19 @@
       "participantId": null,
       "createdBy": "admin",
       "createdAt": "2026-05-01T23:59:00.000Z"
+    },
+    {
+      "id": "adjustment_26290083-2787-44e1-8c46-9ca2b76a1c9c",
+      "date": "2026-04-30",
+      "type": "expense",
+      "category": "adjustment",
+      "amount": 31770,
+      "description": "Gastos bancarios",
+      "participantId": null,
+      "createdBy": "admin",
+      "createdAt": "2026-05-06T16:48:30.000Z"
     }
   ],
   "settlements": [],
-  "updatedAt": "2026-05-01T23:46:19.272Z"
+  "updatedAt": "2026-05-06T16:48:30.000Z"
 }
