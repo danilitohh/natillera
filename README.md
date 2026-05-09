@@ -21,6 +21,7 @@ Aplicación web para administrar una natillera familiar con modo público y modo
 - TypeScript
 - Tailwind CSS 4
 - Persistencia local en JSON (`data/natillera.json`)
+- Persistencia en producción con Upstash Redis en Vercel
 
 ## Configuración
 
@@ -42,6 +43,19 @@ cp .env.example .env.local
 NATILLERA_ADMIN_USERNAME=admin
 NATILLERA_ADMIN_PASSWORD=Familia123
 NATILLERA_SESSION_SECRET=un-secreto-largo-y-aleatorio
+```
+
+Para producción en Vercel, instala **Upstash Redis** desde Vercel Marketplace. Esa integración agrega automáticamente:
+
+```env
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
+Opcionalmente puedes definir una clave propia para guardar los datos:
+
+```env
+NATILLERA_REDIS_DATA_KEY=natillera:database
 ```
 
 Si no configuras variables de entorno en desarrollo, la app usa un fallback local:
@@ -78,13 +92,15 @@ Flujos recomendados:
 
 ## Persistencia
 
-Los datos se guardan en:
+En desarrollo, los datos se guardan en:
 
 ```text
 data/natillera.json
 ```
 
 La app crea ese archivo automáticamente si no existe.
+
+En Vercel, el sistema de archivos del despliegue es de solo lectura, así que las ediciones se guardan en Upstash Redis. Si la clave de Redis está vacía, la app toma como semilla el contenido de `data/natillera.json` del despliegue actual.
 
 ## Validaciones principales
 

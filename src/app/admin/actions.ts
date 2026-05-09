@@ -3,11 +3,17 @@
 import { redirect } from "next/navigation";
 
 import { logoutAdmin, requireAdminSession } from "@/lib/auth";
-import { calculateDurationMonths, getDefaultSettlementDate, parseStoredDate } from "@/lib/date";
+import {
+  calculateDurationMonths,
+  getDefaultSettlementDate,
+  parseStoredDate,
+  toDateInputValue,
+} from "@/lib/date";
 import {
   buildSettlementPreview,
   calculateDashboardMetrics,
   createLoanInstallmentPlan,
+  getLoanInstallmentSnapshot,
   getLoanSnapshot,
 } from "@/lib/finance/calculations";
 import { LOAN_MONTHLY_RATE, LUNCH_FIXED_AMOUNT, RAFFLE_FIXED_AMOUNT } from "@/lib/constants";
@@ -508,7 +514,7 @@ export async function saveRaffleRoundAction(formData: FormData): Promise<void> {
   const month = parseNumberInput(formData.get("month"));
   const year = parseNumberInput(formData.get("year"));
   const winnerParticipantId = parseString(formData.get("winnerParticipantId"));
-  const drawDate = parseString(formData.get("drawDate")) || new Date().toISOString().slice(0, 10);
+  const drawDate = parseString(formData.get("drawDate")) || toDateInputValue(new Date());
   const payoutRecordedAt = parseString(formData.get("payoutRecordedAt"));
   const notes = parseString(formData.get("notes"));
 
@@ -773,7 +779,7 @@ export async function recordLoanPaymentAction(formData: FormData): Promise<void>
 
   const installmentId = parseString(formData.get("installmentId"));
   const paymentAmount = parseNumberInput(formData.get("paymentAmount"));
-  const paidAt = parseString(formData.get("paidAt")) || new Date().toISOString().slice(0, 10);
+  const paidAt = parseString(formData.get("paidAt")) || toDateInputValue(new Date());
 
   if (!installmentId || paymentAmount <= 0) {
     redirectWithError("/admin/loans", "Ingresa un valor válido para la cuota.");
@@ -787,9 +793,10 @@ export async function recordLoanPaymentAction(formData: FormData): Promise<void>
         throw new Error("La cuota no existe.");
       }
 
+      const installmentSnapshot = getLoanInstallmentSnapshot(installment);
       const newPaidAmount = installment.amountPaid + paymentAmount;
 
-      if (newPaidAmount > installment.totalAmount) {
+      if (paymentAmount > installmentSnapshot.totalOutstanding) {
         throw new Error("El pago supera el saldo pendiente de la cuota.");
       }
 

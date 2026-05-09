@@ -12,7 +12,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { FeedbackBanner } from "@/components/ui/feedback-banner";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { requireAdminSession } from "@/lib/auth";
-import { formatDate } from "@/lib/date";
+import { formatDate, toDateInputValue } from "@/lib/date";
 import { calculateDashboardMetrics, getLoanSnapshot } from "@/lib/finance/calculations";
 import { readDatabase } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
@@ -60,6 +60,7 @@ export default async function LoansPage(props: { searchParams: SearchParams }) {
       ]
     : participants;
   const metrics = calculateDashboardMetrics(database);
+  const today = toDateInputValue(new Date());
   const loanSnapshots = database.loans
     .map((loan) => getLoanSnapshot(loan, database.loanInstallments))
     .sort(
@@ -148,7 +149,7 @@ export default async function LoansPage(props: { searchParams: SearchParams }) {
                     name="issuedAt"
                     type="date"
                     className="input"
-                    defaultValue={editingLoan?.issuedAt ?? new Date().toISOString().slice(0, 10)}
+                    defaultValue={editingLoan?.issuedAt ?? today}
                     required
                   />
                 </div>
@@ -332,18 +333,19 @@ export default async function LoansPage(props: { searchParams: SearchParams }) {
                                         value={installment.installment.id}
                                       />
                                       <input
-                                        type="number"
+                                        type="text"
                                         name="paymentAmount"
-                                        min="0"
-                                        max={installment.totalOutstanding}
-                                        step="1"
+                                        inputMode="numeric"
                                         placeholder="Abono"
+                                        aria-label={`Abono cuota ${installment.installment.installmentNumber}`}
+                                        autoComplete="off"
                                         className="input"
+                                        required
                                       />
                                       <input
                                         type="date"
                                         name="paidAt"
-                                        defaultValue={new Date().toISOString().slice(0, 10)}
+                                        defaultValue={today}
                                         className="input"
                                       />
                                       <SubmitButton

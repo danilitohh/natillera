@@ -16,12 +16,56 @@ export function formatCurrency(value: number): string {
   }).format(value);
 }
 
+function normalizeLocalizedNumber(value: string): string {
+  const lastDot = value.lastIndexOf(".");
+  const lastComma = value.lastIndexOf(",");
+
+  if (lastDot === -1 && lastComma === -1) {
+    return value;
+  }
+
+  if (lastDot !== -1 && lastComma !== -1) {
+    const decimalSeparator = lastDot > lastComma ? "." : ",";
+    const thousandsSeparator = decimalSeparator === "." ? "," : ".";
+
+    return value
+      .replaceAll(thousandsSeparator, "")
+      .replace(decimalSeparator, ".");
+  }
+
+  const separator = lastDot !== -1 ? "." : ",";
+  const parts = value.split(separator);
+
+  if (parts.length > 2) {
+    const [first = "", ...rest] = parts;
+    const looksGrouped = first.length > 0 && rest.every((part) => part.length === 3);
+
+    return looksGrouped ? parts.join("") : value.replaceAll(separator, "");
+  }
+
+  const [integerPart = "", decimalPart = ""] = parts;
+
+  if (integerPart.length > 0 && decimalPart.length === 3) {
+    return `${integerPart}${decimalPart}`;
+  }
+
+  return value.replace(separator, ".");
+}
+
 export function parseNumberInput(value: FormDataEntryValue | null): number {
   if (typeof value !== "string") {
     return 0;
   }
 
-  const normalized = value.replace(/[^\d.-]/g, "");
+  const cleaned = value.trim().replace(/[^\d,.-]/g, "");
+
+  if (!cleaned) {
+    return 0;
+  }
+
+  const sign = cleaned.startsWith("-") ? "-" : "";
+  const unsigned = cleaned.replaceAll("-", "");
+  const normalized = `${sign}${normalizeLocalizedNumber(unsigned)}`;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 }
