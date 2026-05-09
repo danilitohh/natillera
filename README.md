@@ -45,12 +45,14 @@ NATILLERA_ADMIN_PASSWORD=Familia123
 NATILLERA_SESSION_SECRET=un-secreto-largo-y-aleatorio
 ```
 
-Para producción en Vercel, instala **Upstash Redis** desde Vercel Marketplace. Esa integración agrega automáticamente:
+Para producción en Vercel, instala **Upstash Redis** desde Vercel Marketplace. Esa integración agrega automáticamente variables como:
 
 ```env
-UPSTASH_REDIS_REST_URL=...
-UPSTASH_REDIS_REST_TOKEN=...
+KV_REST_API_URL=...
+KV_REST_API_TOKEN=...
 ```
+
+La app también soporta los nombres clásicos de Upstash (`UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`).
 
 Opcionalmente puedes definir una clave propia para guardar los datos:
 
