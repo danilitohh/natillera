@@ -4,10 +4,7 @@ import { redirect } from "next/navigation";
 import { loginAction } from "@/app/login/actions";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { FeedbackBanner } from "@/components/ui/feedback-banner";
-import {
-  adminUsesFallbackCredentials,
-  getAdminSession,
-} from "@/lib/auth";
+import { getAdminSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -89,12 +86,6 @@ export default async function LoginPage(props: {
           <div className="mt-6">
             <FeedbackBanner success={success} error={error} />
           </div>
-
-          {adminUsesFallbackCredentials() ? (
-            <div className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700">
-              Modo desarrollo: si todavía no configuraste variables de entorno, el usuario por defecto es <strong>admin</strong> y la clave <strong>natillera123</strong>. Cámbialas antes de usar la app en producción.
-            </div>
-          ) : null}
 
           <form action={loginAction} className="mt-8 grid gap-5">
             <input type="hidden" name="next" value={next} />
