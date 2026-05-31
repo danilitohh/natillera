@@ -1,14 +1,14 @@
 import Link from "next/link";
 
-import { deleteLunchAction, saveLunchAction } from "@/app/admin/actions";
+import { deleteLunchAction } from "@/app/admin/actions";
 import { AdminShell } from "@/components/layout/admin-shell";
 import { ConfirmButton } from "@/components/forms/confirm-button";
-import { SubmitButton } from "@/components/forms/submit-button";
+import { LunchForm } from "@/components/forms/lunch-form";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FeedbackBanner } from "@/components/ui/feedback-banner";
 import { StatCard } from "@/components/ui/stat-card";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { LUNCH_FIXED_AMOUNT, MONTH_OPTIONS } from "@/lib/constants";
+import { MONTH_OPTIONS } from "@/lib/constants";
 import { requireAdminSession } from "@/lib/auth";
 import {
   formatDate,
@@ -84,120 +84,14 @@ export default async function LunchesPage(props: { searchParams: SearchParams })
                 {editingRecord ? "Editar registro" : "Registrar almuerzo"}
               </h3>
 
-              <form action={saveLunchAction} className="mt-6 grid gap-4">
-                <input type="hidden" name="id" value={editingRecord?.id ?? ""} />
-
-                <div>
-                  <label htmlFor="participantId" className="label">
-                    Participante
-                  </label>
-                  <select
-                    id="participantId"
-                    name="participantId"
-                    className="select"
-                    defaultValue={editingRecord?.participantId}
-                    required
-                  >
-                    <option value="">Selecciona</option>
-                    {participants.map((participant) => (
-                      <option key={participant.id} value={participant.id}>
-                        {participant.fullName}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="month" className="label">
-                      Mes
-                    </label>
-                    <select
-                      id="month"
-                      name="month"
-                      className="select"
-                      defaultValue={String(editingRecord?.month ?? selectedMonth)}
-                    >
-                      {MONTH_OPTIONS.map((month) => (
-                        <option key={month.value} value={month.value}>
-                          {month.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="year" className="label">
-                      Año
-                    </label>
-                    <select
-                      id="year"
-                      name="year"
-                      className="select"
-                      defaultValue={String(editingRecord?.year ?? selectedYear)}
-                    >
-                      {getYearOptions(5).map((year) => (
-                        <option key={year} value={year}>
-                          {year}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="amountPaid" className="label">
-                    Valor pagado
-                  </label>
-                  <input
-                    id="amountPaid"
-                    name="amountPaid"
-                    type="number"
-                    min="0"
-                    max={LUNCH_FIXED_AMOUNT}
-                    className="input"
-                    defaultValue={editingRecord?.amountPaid ?? LUNCH_FIXED_AMOUNT}
-                    required
-                  />
-                  <p className="helper">Valor fijo sugerido: {formatCurrency(LUNCH_FIXED_AMOUNT)}</p>
-                </div>
-
-                <div>
-                  <label htmlFor="paidAt" className="label">
-                    Fecha de pago
-                  </label>
-                  <input
-                    id="paidAt"
-                    name="paidAt"
-                    type="date"
-                    className="input"
-                    defaultValue={editingRecord?.paidAt}
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="notes" className="label">
-                    Observaciones
-                  </label>
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    className="textarea"
-                    defaultValue={editingRecord?.notes}
-                  />
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  <SubmitButton
-                    label={editingRecord ? "Guardar registro" : "Registrar almuerzo"}
-                    pendingLabel="Guardando..."
-                  />
-                  {editingRecord ? (
-                    <Link href={`/admin/lunches?month=${selectedMonth}&year=${selectedYear}`} className="pill-link">
-                      Cancelar
-                    </Link>
-                  ) : null}
-                </div>
-              </form>
+              <LunchForm
+                participants={participants}
+                editingRecord={editingRecord}
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
+                yearOptions={getYearOptions(5)}
+                cancelHref={`/admin/lunches?month=${selectedMonth}&year=${selectedYear}`}
+              />
             </div>
 
             <div className="grid gap-6">

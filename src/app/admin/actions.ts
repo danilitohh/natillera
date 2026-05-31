@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 import { logoutAdmin, requireAdminSession } from "@/lib/auth";
 import {
   calculateDurationMonths,
+  formatMonthYear,
   getDefaultSettlementDate,
+  getMonthEndDate,
   parseStoredDate,
   toDateInputValue,
 } from "@/lib/date";
@@ -572,6 +574,10 @@ export async function saveLunchAction(formData: FormData): Promise<void> {
   await ensureAdmin();
 
   const id = parseString(formData.get("id"));
+  const recordType =
+    parseString(formData.get("recordType")) === "extra_sale"
+      ? "extra_sale"
+      : "contribution";
   const participantId = parseString(formData.get("participantId"));
   const month = parseNumberInput(formData.get("month"));
   const year = parseNumberInput(formData.get("year"));
@@ -579,12 +585,53 @@ export async function saveLunchAction(formData: FormData): Promise<void> {
   const paidAt = parseString(formData.get("paidAt"));
   const notes = parseString(formData.get("notes"));
 
-  if (!participantId || !month || !year) {
+  if (!month || !year) {
     redirectWithError("/admin/lunches", "Completa los datos del almuerzo.");
   }
 
-  if (amountPaid > LUNCH_FIXED_AMOUNT) {
-    redirectWithError("/admin/lunches", "El aporte de almuerzos no puede superar $5.000.");
+  assertPositive(amountPaid, "El valor pagado");
+
+  if (recordType === "extra_sale") {
+    if (id) {
+      redirectWithError(
+        "/admin/lunches",
+        "Las ventas extras se registran como movimientos nuevos.",
+      );
+    }
+
+    if (amountPaid <= 0) {
+      redirectWithError("/admin/lunches", "Ingresa un valor válido para la venta extra.");
+    }
+
+    await runActionOrRedirect("/admin/lunches", async () => {
+      await updateDatabase((database) => {
+        const timestamp = nowIso();
+        const description = [
+          `Venta almuerzo extra ${formatMonthYear(month, year)}`,
+          notes,
+        ]
+          .filter(Boolean)
+          .join(" - ");
+
+        database.cashAdjustments.push({
+          id: createId("adjustment"),
+          date: paidAt || getMonthEndDate(month, year),
+          type: "income",
+          category: "adjustment",
+          amount: amountPaid,
+          description,
+          participantId: participantId || undefined,
+          createdBy: "admin",
+          createdAt: timestamp,
+        });
+      });
+    });
+
+    redirectWithSuccess("/admin/lunches", "Venta de almuerzo extra registrada.");
+  }
+
+  if (!participantId) {
+    redirectWithError("/admin/lunches", "Selecciona el participante del almuerzo.");
   }
 
   await runActionOrRedirect("/admin/lunches", async () => {
